@@ -85,22 +85,47 @@ document.addEventListener('DOMContentLoaded', () => {
     const notesForm = document.getElementById('notes-form');
     const submitSuccess = document.getElementById('submit-success');
 
-    notesForm.addEventListener('submit', (e) => {
+    notesForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        // In a real app, this would send data to a backend
+        
         const patientName = document.getElementById('patient-name').value;
         const patientNotes = document.getElementById('patient-notes').value;
+        const submitBtn = notesForm.querySelector('button[type="submit"]');
         
-        console.log("Saving data...");
-        console.log("Patient:", patientName);
-        console.log("Notes:", patientNotes);
+        // UI Feedback
+        submitBtn.textContent = 'Processing with AI-1...';
+        submitBtn.disabled = true;
+        
+        try {
+            const response = await fetch('http://localhost:3000/api/notes/format', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ patientName, rawNotes: patientNotes })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                console.log("Success! AI-1 Formatted Data:", data.formatted);
+                submitSuccess.textContent = 'Notes formatted securely! (Check console for output)';
+                submitSuccess.style.color = '#27ae60';
+                notesForm.reset();
+            } else {
+                throw new Error(data.error || "Unknown error");
+            }
+        } catch (error) {
+            console.error("Error submitting notes:", error);
+            submitSuccess.textContent = 'Error formatting notes: ' + error.message;
+            submitSuccess.style.color = 'red';
+        }
         
         submitSuccess.classList.remove('hidden');
-        notesForm.reset();
+        submitBtn.textContent = 'Submit Notes';
+        submitBtn.disabled = false;
         
         setTimeout(() => {
             submitSuccess.classList.add('hidden');
-        }, 3000);
+        }, 5000);
     });
 
     // --- Chatbot Logic ---
@@ -132,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    function handleChatSend() {
+    async function handleChatSend() {
         const text = chatInput.value.trim();
         if (text === '') return;
 
@@ -140,11 +165,41 @@ document.addEventListener('DOMContentLoaded', () => {
         addMessage(text, 'user');
         chatInput.value = '';
 
-        // Simulate LLM delay and response
-        // In a real application, you would make a fetch() request to your LLM endpoint here
-        setTimeout(() => {
-            addMessage("I am a simple UI demo. Connect me to an LLM endpoint to provide real answers!", 'bot');
-        }, 1000);
+        // Add a temporary loading message
+        const loadingMsgId = Date.now();
+        const loadingDiv = document.createElement('div');
+        loadingDiv.classList.add('message', 'bot-message');
+        loadingDiv.id = `msg-${loadingMsgId}`;
+        loadingDiv.textContent = "...";
+        chatMessages.appendChild(loadingDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        try {
+            // Send request to our new backend endpoint
+            const response = await fetch('http://localhost:3000/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: text })
+            });
+            
+            const data = await response.json();
+            
+            // Replace loading message with actual response
+            const msgEl = document.getElementById(`msg-${loadingMsgId}`);
+            if (msgEl) {
+                msgEl.textContent = data.reply || "Error: No reply received.";
+            }
+        } catch (error) {
+            console.error("Chat error:", error);
+            const msgEl = document.getElementById(`msg-${loadingMsgId}`);
+            if (msgEl) {
+                msgEl.textContent = "Sorry, I couldn't connect to the server.";
+            }
+        }
+        
+        chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
     chatSendBtn.addEventListener('click', handleChatSend);

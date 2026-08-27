@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Smith - Medical Portfolio & Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <h1>Dr. Jane Smith, MD</h1>
+            <ul>
+                <li><a href="#portfolio" id="portfolio-link">Portfolio</a></li>
+                <li><a href="#" id="dashboard-link">Dashboard Login</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Public Portfolio Section -->
+    <main id="portfolio" class="section active">
+        <header class="hero">
+            <h2>Compassionate Care & Expert Medicine</h2>
+            <p>Board Certified in Internal Medicine with over 15 years of experience.</p>
+        </header>
+
+        <section class="details">
+            <div class="card">
+                <h3>About Me</h3>
+                <p>I am dedicated to providing comprehensive and personalized medical care to adult patients. My approach focuses on preventative health and managing chronic conditions.</p>
+            </div>
+            <div class="card">
+                <h3>Specialties</h3>
+                <ul>
+                    <li>Internal Medicine</li>
+                    <li>Preventative Care</li>
+                    <li>Chronic Disease Management</li>
+                    <li>Geriatrics</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3>Background</h3>
+                <p><strong>Education:</strong> Harvard Medical School (MD)<br>
+                <strong>Residency:</strong> Massachusetts General Hospital<br>
+                <strong>Certifications:</strong> American Board of Internal Medicine</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Password Prompt Modal -->
+    <div id="password-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn" id="close-modal">&times;</span>
+            <h2>Doctor Access</h2>
+            <p>Please enter the password to access the dashboard.</p>
+            <input type="password" id="password-input" placeholder="Password (password123)">
+            <button id="login-btn">Login</button>
+            <p id="login-error" class="error-msg hidden">Incorrect password.</p>
+        </div>
+    </div>
+
+    <!-- Doctor's Dashboard Section -->
+    <main id="dashboard" class="section hidden">
+        <div class="dashboard-header">
+            <h2>Doctor's Dashboard</h2>
+            <button id="logout-btn">Logout</button>
+        </div>
+        
+        <div class="dashboard-content">
+            <h3>Patient Notes Data Entry</h3>
+            <form id="notes-form">
+                <div class="form-group">
+                    <label for="patient-name">Patient Name / ID:</label>
+                    <input type="text" id="patient-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="patient-notes">Raw Patient Notes:</label>
+                    <textarea id="patient-notes" rows="10" placeholder="Type or paste patient notes here..." required></textarea>
+                </div>
+                <button type="submit">Submit Notes</button>
+            </form>
+            <div id="submit-success" class="success-msg hidden">Notes submitted successfully!</div>
+        </div>
+    </main>
+
+    <!-- Chatbot UI -->
+    <div id="chatbot-container" class="chatbot-minimized">
+        <div class="chatbot-header" id="chatbot-header">
+            <h4>Health Assistant</h4>
+            <span id="chatbot-toggle-icon">▲</span>
+        </div>
+        <div class="chatbot-body hidden" id="chatbot-body">
+            <div class="chat-messages" id="chat-messages">
+                <div class="message bot-message">Hello! I am Dr. Smith's virtual assistant. How can I help you today?</div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Type your message...">
+                <button id="chat-send">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

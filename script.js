@@ -143,10 +143,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatSendBtn = document.getElementById('chat-send');
     const chatMessages = document.getElementById('chat-messages');
 
+    const chatbotContainer = document.getElementById('chatbot-container');
+
     chatbotHeader.addEventListener('click', () => {
         chatbotBody.classList.toggle('hidden');
+        chatbotContainer.classList.toggle('chatbot-minimized');
         if (chatbotBody.classList.contains('hidden')) {
-            chatbotToggleIcon.textContent = '▲';
+            chatbotToggleIcon.textContent = '💬';
         } else {
             chatbotToggleIcon.textContent = '▼';
             chatInput.focus();

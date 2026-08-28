@@ -91,6 +91,39 @@ app.post('/api/notes/format', async (req, res) => {
     }
 });
 
+// Mock Authority Endpoint (Dummy Receiver)
+app.post('/api/submit-to-authority', (req, res) => {
+    // 1. Receive Data (we parse it to ensure it was sent, even if we just randomize the outcome)
+    const { formattedData } = req.body;
+
+    // 2. Simulate Outcomes (Randomizer: 50% chance to accept/reject)
+    const isAccepted = Math.random() >= 0.5;
+
+    if (isAccepted) {
+        // 3. Success Response
+        return res.status(200).json({ 
+            status: "success", 
+            message: "Authority accepted the data." 
+        });
+    } else {
+        // 4. Rejection Response (The Allegation)
+        const mockAllegations = [
+            'Missing patient vital signs',
+            'Improper date formatting',
+            'Diagnosis code is unclear',
+            'Incomplete medication history provided'
+        ];
+        
+        // Randomly select one string from the predefined array
+        const randomAllegation = mockAllegations[Math.floor(Math.random() * mockAllegations.length)];
+
+        return res.status(400).json({ 
+            status: "rejected", 
+            allegation: randomAllegation 
+        });
+    }
+});
+
 // Start Server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

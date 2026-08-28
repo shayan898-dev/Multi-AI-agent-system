@@ -95,6 +95,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // UI Feedback
         submitBtn.textContent = 'Processing with AI-1...';
         submitBtn.disabled = true;
+        const resultContainer = document.getElementById('formatted-result-container');
+        if (resultContainer) resultContainer.classList.add('hidden');
         
         try {
             const response = await fetch('http://localhost:3000/api/notes/format', {
@@ -107,8 +109,13 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (response.ok) {
                 console.log("Success! AI-1 Formatted Data:", data.formatted);
-                submitSuccess.textContent = 'Notes formatted securely! (Check console for output)';
+                submitSuccess.textContent = 'Notes formatted securely!';
                 submitSuccess.style.color = '#27ae60';
+                
+                // Display the output directly on the webpage
+                document.getElementById('formatted-result').textContent = data.formatted;
+                document.getElementById('formatted-result-container').classList.remove('hidden');
+                
                 notesForm.reset();
             } else {
                 throw new Error(data.error || "Unknown error");
